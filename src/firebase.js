@@ -4,14 +4,14 @@ import 'firebase/database';
 import 'firebase/storage';
 
 var firebaseConfig = {
-    apiKey: "AIzaSyB_PEFA_NtlEpQ7-SUPwNfxCKWgnFICO4w",
-    authDomain: "react-chat-dev.firebaseapp.com",
-    databaseURL: "https://react-chat-dev.firebaseio.com",
-    projectId: "react-chat-dev",
-    storageBucket: "react-chat-dev.appspot.com",
-    messagingSenderId: "469869420867",
-    appId: "1:469869420867:web:c4b0fa81c915a663f64ff6",
-    measurementId: "G-RY4C7703C9"
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_DATABASE_URL,
+    projectId: process.env.REACT_APP_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_APP_ID,
+    measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
