@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Grid, Form, Segment, Button, Header, Message, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import firebase from '../../firebase';
 
 class Login extends Component {
 
@@ -23,11 +24,24 @@ class Login extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        if (this.isFormValid()) {
-            this.setState({ errors: [], loading: true });
+        // if (this.isFormValid(this.state)) {
 
-        }
+        this.setState({ errors: [], loading: true });
+        firebase
+            .auth()
+            .signInWithEmailAndPassword(this.state.email, this.state.password)
+            .then(signedUser => {
+                console.log(signedUser);
+                this.setState({ loading: false });
+            })
+            .catch(err => {
+                console.error(err);
+                this.setState({ errors: this.state.errors.concat(err), loading: false });
+            });
+        // }
     }
+
+    isFormValid = ({ email, password }) => email && password;
 
     render() {
 
@@ -40,11 +54,15 @@ class Login extends Component {
                         <Icon name="code branch" color="violet" />
                         Login to React Chat
                 </Header>
-                    <Form size="large">
+                    <Form size="large" onSubmit={this.handleSubmit}>
                         <Segment stacked>
-                            <Form.Input fluid name="email" icon="user" iconPosition="left" placeholder="Email" onChange={this.handeChange} type="text" className={this.hanldeInputError(errors, 'email')} />
+                            <Form.Input fluid name="email" icon="mail" iconPosition="left" placeholder="Email Address" onChange={this.handleChange} type="email" value={email}
+                                className={this.hanldeInputError(errors, 'email')}
+                            />
 
-                            <Form.Input fluid name="password" icon="key" iconPosition="left" placeholder="Password" onChange={this.handeChange} type="password" className={this.hanldeInputError(errors, 'password')} />
+                            <Form.Input fluid name="password" icon="key" iconPosition="left" placeholder="Password" onChange={this.handleChange} type="password" value={password}
+                                className={this.hanldeInputError(errors, 'password')}
+                            />
 
                             <Button disabled={loading} className={loading ? 'loading' : ''} color="violet" fluid size="large">Login</Button>
 
