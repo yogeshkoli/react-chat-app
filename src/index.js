@@ -12,11 +12,21 @@ import Register from './components/Auth/Register';
 
 import firebase from './firebase';
 
+import { createStore } from 'redux';
+import { Provider, connect } from 'react-redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import rootReducer from './reducers';
+
+import { setUser } from './actions';
+
+const store = createStore(rootReducer, composeWithDevTools());
+
 class Root extends Component {
 
     componentDidMount() {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
+                this.props.setUser(user);
                 this.props.history.push('/');
             }
         });
@@ -33,9 +43,15 @@ class Root extends Component {
     }
 }
 
-const RoutewithAuth = withRouter(Root);
+const RoutewithAuth = withRouter(connect(null, { setUser })(Root));
 
-ReactDOM.render(<Router><RoutewithAuth /></Router>, document.getElementById('root'));
+ReactDOM.render(
+    <Provider store={store}>
+        <Router>
+            <RoutewithAuth />
+        </Router>
+    </Provider>,
+    document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
