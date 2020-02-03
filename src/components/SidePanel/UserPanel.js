@@ -16,9 +16,13 @@ class UserPanel extends Component {
         },
         {
             key: 'signout',
-            text: <span>Sign Out</span>
+            text: <span onClick={this.hanelSignOut}>Sign Out</span>
         }
     ]
+
+    hanelSignOut = () => {
+        firebase.auth().signOut().then(() => console.log('user signout'));
+    }
 
     render() {
         return (
