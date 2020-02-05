@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import firebase from '../../firebase';
 import { Grid, Header, Icon, Dropdown, Image } from 'semantic-ui-react';
-import Channels from './Channels';
 
 class UserPanel extends Component {
 
@@ -53,8 +52,6 @@ class UserPanel extends Component {
                             this.dropDownOptions()
                         } />
                     </Header>
-
-                    <Channels />
                 </Grid.Row>
             </Grid>
         );
