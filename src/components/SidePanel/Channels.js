@@ -13,7 +13,8 @@ class Channels extends Component {
         channelDetails: '',
         channelRef: firebase.database().ref('channels'),
         modal: false,
-        firstLoad: true
+        firstLoad: true,
+        activeChannel: ''
     }
 
     componentDidMount() {
@@ -33,6 +34,7 @@ class Channels extends Component {
         const firstChannel = this.state.channels[0];
         if (this.state.firstLoad && this.state.channels.length > 0) {
             this.props.setCurrentChannel(firstChannel);
+            this.setActiveChannel(firstChannel);
         }
         this.setState({ firstLoad: false });
     }
@@ -81,13 +83,19 @@ class Channels extends Component {
             onClick={() => this.changeChannel(channel)}
             name={channel.name}
             style={{ opacity: 0.7 }}
+            active={channel.id === this.state.activeChannel}
         >
             # {channel.name}
         </Menu.Item>
     ));
 
     changeChannel = channel => {
+        this.setActiveChannel(channel);
         this.props.setCurrentChannel(channel);
+    }
+
+    setActiveChannel = channel => {
+        this.setState({ activeChannel: channel.id });
     }
 
     isFormValid = ({ channelName, channelDetails }) => channelName && channelDetails;
