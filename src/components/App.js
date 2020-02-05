@@ -18,8 +18,8 @@ function App({ currentUser }) {
           <Messages />
         </Grid.Column>
 
-        <Grid.Column style={{ marginLeft: 320 }}>
-          <MetaPanel width={4} />
+        <Grid.Column width={4} >
+          <MetaPanel />
         </Grid.Column>
       </Grid>
     </div >
