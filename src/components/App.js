@@ -13,9 +13,16 @@ function App({ currentUser, currentChannel }) {
     <div>
       <Grid columns="equal" className="app" style={{ background: '#eee' }}>
         <ColorPanel />
-        <SidePanel currentUser={currentUser} />
+        <SidePanel
+          key={currentUser && currentUser.uid}
+          currentUser={currentUser}
+        />
         <Grid.Column style={{ marginLeft: 320 }}>
-          <Messages currentChannel={currentChannel} />
+          <Messages
+            key={currentChannel && currentChannel.id}
+            currentChannel={currentChannel}
+            currentUser={currentUser}
+          />
         </Grid.Column>
 
         <Grid.Column width={4} >
