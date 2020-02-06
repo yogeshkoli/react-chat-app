@@ -11,7 +11,7 @@ class UserPanel extends Component {
     dropDownOptions = () => [
         {
             key: 'user',
-            text: <span>Signed in as <strong>{this.state.user.displayName}</strong></span>,
+            text: <span>Signed in as <strong>{this.state.user?.displayName}</strong></span>,
             disabled: true
         },
         {
@@ -45,8 +45,8 @@ class UserPanel extends Component {
                     <Header style={{ padding: '0.25em' }} as="h4" inverted>
                         <Dropdown trigger={
                             <span>
-                                <Image src={user.photoURL} avatar spaced="right" />
-                                {user.displayName}
+                                <Image src={user?.photoURL} avatar spaced="right" />
+                                {user?.displayName}
                             </span>
                         } options={
                             this.dropDownOptions()
