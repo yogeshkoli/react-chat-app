@@ -38,7 +38,7 @@ class UserPanel extends Component {
                     <Header inverted floated="left" as="h2">
                         <Header.Content>
                             <Icon name="code" />
-                            React Chat
+                            Chat App
                         </Header.Content>
                     </Header>
 
