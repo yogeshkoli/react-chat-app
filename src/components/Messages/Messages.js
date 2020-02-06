@@ -23,6 +23,14 @@ class Messages extends Component {
         }
     }
 
+    componentWillUnmount() {
+        const { user, channel } = this.state;
+
+        if (user && channel) {
+            this.removeListeners(channel.id);
+        }
+    }
+
     addListeners = channelId => {
         this.addMessageListener(channelId);
     }
@@ -33,6 +41,14 @@ class Messages extends Component {
             loadedMessages.push(snap.val());
             this.setState({ messages: loadedMessages, messagesLoading: false });
         });
+    }
+
+    removeListeners = channelId => {
+        this.removeMessageListener(channelId);
+    }
+
+    removeMessageListener = channelId => {
+        this.state.messagesRef.child(channelId).off();
     }
 
     displayMessages = messages => (messages.length > 0 && messages.map(message => (
