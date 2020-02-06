@@ -56,7 +56,7 @@ class MessageForm extends Component {
 
     render() {
 
-        const { errors } = this.state;
+        const { errors, message, loading } = this.state;
 
         return (
             <Segment className="message__form">
@@ -69,6 +69,7 @@ class MessageForm extends Component {
                     labelPosition="left"
                     placeholder="Write your message"
                     className={errors.some(error => error.message.includes('message')) ? 'error' : ''}
+                    value={message}
                 />
 
                 <Button.Group icon widths={2}>
@@ -78,6 +79,7 @@ class MessageForm extends Component {
                         labelPosition="left"
                         icon="edit"
                         onClick={this.sendMessage}
+                        disabled={loading}
                     />
 
                     <Button
