@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import { Segment, Button, Input } from 'semantic-ui-react';
 import firebase from '../../firebase';
+import uuidv4 from 'uuid/v4';
 import FileModal from './FileModal';
 
 class MessageForm extends Component {
 
     state = {
+        storageRef: firebase.storage().ref(),
+        uploadState: '',
+        uploadTask: null,
+        percentageUploaded: 0,
         message: '',
         channel: this.props.currentChannel,
         user: this.props.currentUser,
@@ -22,15 +27,21 @@ class MessageForm extends Component {
         this.setState({ [event.target.name]: event.target.value });
     }
 
-    currentMessage() {
-        const message = {
-            content: this.state.message,
+    createMessage = (fileUrl = null) => {
+        let message = {
             timestamp: firebase.database.ServerValue.TIMESTAMP,
             user: {
                 id: this.state.user.uid,
                 name: this.state.user.displayName,
                 avatar: this.state.user.photoURL
             }
+        }
+
+        if (fileUrl !== null) {
+            message['image'] = fileUrl;
+        }
+        else {
+            message['content'] = this.state.message;
         }
 
         return message;
@@ -45,11 +56,12 @@ class MessageForm extends Component {
             messagesRef
                 .child(channel.id)
                 .push()
-                .set(this.currentMessage())
+                .set(this.createMessage())
                 .then(() => {
                     this.setState({ loading: false, message: '', errors: [] });
                 })
                 .catch(err => {
+                    console.log('handled error 1');
                     console.error(err);
                     this.setState({ loading: false, errors: this.state.errors.concat(err) });
                 });
@@ -67,7 +79,59 @@ class MessageForm extends Component {
     }
 
     uploadFile = (file, metadata) => {
-        console.log(file, metadata);
+        const pathToUpload = this.state.channel.id;
+        const ref = this.props.messagesRef;
+        const filePath = `chat/public/${uuidv4()}.jpg`;
+
+        this.setState({
+            uploadState: 'uploading',
+            uploadTask: this.state.storageRef.child(filePath).put(file, metadata)
+        }, () => {
+            this.state.uploadTask.on('state_changed', snap => {
+                const percentageUploaded = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+                this.setState({ percentageUploaded });
+            },
+                err => {
+                    console.log('handled error 2');
+                    console.error(err);
+                    this.setState({
+                        errors: this.state.errors.concat(err),
+                        uploadState: 'error',
+                        uploadTask: null
+                    });
+                },
+                () => {
+                    this.state.uploadTask.snapshot.ref.getDownloadURL()
+                        .then(downloadUrl => {
+                            this.sendFileMessage(downloadUrl, ref, pathToUpload);
+                        })
+                        .catch(err => {
+                            console.log('handled error 3');
+                            console.error(err);
+                            this.setState({
+                                errors: this.state.errors.concat(err),
+                                uploadState: 'error',
+                                uploadTask: null
+                            });
+                        });
+                });
+        });
+    }
+
+    sendFileMessage = (fileUrl, ref, pathToUpload) => {
+        ref.child(pathToUpload)
+            .push()
+            .set(this.createMessage(fileUrl))
+            .then(() => {
+                this.setState({ uploadState: 'done' })
+            })
+            .catch(err => {
+                console.log('handled error 4');
+                console.error(err);
+                this.setState({
+                    errors: this.state.errors.concat(err)
+                });
+            });
     }
 
     render() {
