@@ -54,6 +54,12 @@ class MessageForm extends Component {
 
     }
 
+    handleKeyDown = event => {
+        if (event.key === 'Enter') {
+            this.sendMessage();
+        }
+    }
+
     render() {
 
         const { errors, message, loading } = this.state;
@@ -70,6 +76,7 @@ class MessageForm extends Component {
                     placeholder="Write your message"
                     className={errors.some(error => error.message.includes('message')) ? 'error' : ''}
                     value={message}
+                    onKeyDown={this.handleKeyDown}
                 />
 
                 <Button.Group icon widths={2}>
