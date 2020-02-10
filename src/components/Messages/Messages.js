@@ -53,7 +53,8 @@ class Messages extends Component {
             return acc;
         }, []);
 
-        const numUniqueUsers = `${uniqueUsers.length} Users`;
+        const plural = uniqueUsers.length > 1 || uniqueUsers === 0;
+        const numUniqueUsers = `${uniqueUsers.length} User${plural ? 's' : ''}`;
         this.setState({ numUniqueUsers: numUniqueUsers });
     }
 
